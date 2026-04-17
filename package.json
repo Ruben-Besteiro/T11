@@ -30,7 +30,7 @@
     "dev": "node --watch --env-file=.env src/app.js",
     "start": "node src/app.js",
     "build": "echo 'No build step required'",
-    "test": "node --test",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint ."
   },
   "devDependencies": {

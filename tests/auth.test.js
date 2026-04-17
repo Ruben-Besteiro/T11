@@ -2,7 +2,7 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 
 // Force test environment
-process.env.DB_NAME = 't8_test';
+process.env.DB_NAME = 't11';
 process.env.NODE_ENV = 'test';
 // Use port 0 to avoid "address already in use" if multiple workers start
 process.env.PORT = '0'; 
@@ -16,7 +16,7 @@ describe('Auth Endpoints', () => {
     beforeAll(async () => {
         // Ensure connection to test database
         if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.MONGO_URL, { dbName: 't8_test' });
+            await mongoose.connect(process.env.MONGO_URL, { dbName: 't11' });
         }
     });
 

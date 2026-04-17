@@ -16,6 +16,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
     steps:
       # Primero mira el código del repo
       - name: Checkout código
@@ -41,3 +47,6 @@ jobs:
         run: npm test
         env:
           NODE_ENV: test
+          # Es necesario que esto se duplique aquí
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGO_URL: mongodb://localhost:27017/t8_test
