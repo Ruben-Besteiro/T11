@@ -3,12 +3,13 @@ import express from 'express';
 import cors from 'cors';
 import dbConnect from './config/db.js';
 import routes from './routes/index.js';
-import 'dotenv/config';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './api-docs/swagger.js';
+import morgan from 'morgan';
 import morganBody from 'morgan-body';
 import { loggerStream } from './utils/handleSlack.js';
+import { env } from './config/env.js';
 
 const app = express();
 
@@ -27,13 +28,33 @@ morganBody(app, {
 // Archivos estáticos
 app.use('/uploads', express.static('storage'));     // Cuando el usuario mete uploads en la URL, se mete en la carpeta storage del servidor
 
-
-
 // Health check
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString()
+  });
+});
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Configurar según entorno
+if (isProduction) {
+  // Menos logs
+  app.use(morgan('combined'));
+} else {
+  // Más verbose
+  app.use(morgan('dev'));
+}
+
+// Error handler diferente
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(err.status || 500).json({
+    error: true,
+    message: isProduction ? 'Error interno' : err.message,
+    ...(isProduction ? {} : { stack: err.stack })
   });
 });
 
@@ -50,13 +71,13 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Iniciar servidor
-const PORT = process.env.PORT || 3000;
+const PORT = env.PORT;
 
 const startServer = async () => {
-  console.log("Intentando conectar a:", process.env.DB_URI);
+  console.log('Intentando conectar a:', env.DB_URI);
   await dbConnect();
   app.listen(PORT, () => {
-    console.log(`🚀 Servidor en http://localhost:${PORT}`);
+    console.log(`🚀 Servidor en http://localhost:${PORT} [${env.NODE_ENV}]`);
   });
 };
 
