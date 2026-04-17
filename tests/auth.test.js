@@ -17,7 +17,7 @@ describe('Auth Endpoints', () => {
     beforeAll(async () => {
         // Ensure connection to test database
         if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.DB_URI, { dbName: 't8_test' });
+            await mongoose.connect(process.env.MONGO_URL, { dbName: 't8_test' });
         }
     });
 
