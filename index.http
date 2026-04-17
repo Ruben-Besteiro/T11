@@ -1,11 +1,18 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjllMjE3OGY5YTA4YzY3YWI2YmUxMGVhIiwiaWF0IjoxNzc2NDI0ODQ3LCJleHAiOjE3NzY0MjU3NDd9.oNNL6cuWpGXrsdZeUH8720InzwPgeY22_58LkeTvO8A
-@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjljNDBjODUzYmQ3MzNjMjNmNjU5MGY2IiwiaWF0IjoxNzc2NDE3MjIxLCJleHAiOjE3NzY0MTgxMjF9.3Npt1jaZqi0iXu7gQhK9EBBPxw5BbstQpVt0jytGlyk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjllMjFmN2NmNzJjNDczMGMwZWQ2MjQ4IiwiaWF0IjoxNzc2NDI2ODc2LCJleHAiOjE3NzY0Mjc3NzZ9.czNAbrGphspKAeHvDd9IjTqDdAzqaqK41v96n7kNPeg
+@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjllMjVmY2FmNzJjNDczMGMwZWQ2MjU3IiwiaWF0IjoxNzc2NDQzMzM4LCJleHAiOjE3NzY0NDQyMzh9.0_S6NMbWamEK7_FYkLKjlx4lysSGv8Z7ZgwQQuCGJ2k
 
 ### Las requests ya no utilizan localhost:3000
-### En Railway hay que crear un "dominio público" y eso se copia y pega
+### En Railway hay que crear un "dominio público"
+### La URL verdadera es la que hay en el servicio de GitHub => Settings => Networking
+### En caso de haber varias, hay que ver que el puerto coincida
+### Si el error es 404, es que la URL la he sacado del sitio incorrecto
+### Pero si es 502, es que está usando el puerto que no es (creo)
+### Para ver la base de datos desde Mongo Compass hay que buscar la URL que cuesta "egress tokens"
+
+GET https://t11-production-1adc.up.railway.app/health
 
 ### Registrar usuario normal
-POST https://t11.up.railway.app/api/auth/register
+POST https://t11-production-1adc.up.railway.app/api/auth/register
 Content-Type: application/json
 
 {
@@ -17,12 +24,12 @@ Content-Type: application/json
 }
 
 ### Registrar usuario admin
-POST https://t11.up.railway.app/api/auth/register
+POST https://t11-production-1adc.up.railway.app/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "Pol",
-    "email": "pulpo.pol@yopmail.xd",
+    "name": "Willy",
+    "email": "willy.rex@yopmail.xd",
     "password": "contraseña",
     "role": "admin",
     "age": 67
@@ -42,7 +49,7 @@ Content-Type: application/json
 }
 
 ### Login
-POST http://localhost:3000/api/auth/login
+POST https://t11-production-1adc.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
@@ -51,21 +58,21 @@ Content-Type: application/json
 }
 
 ### Login admin
-POST http://localhost:3000/api/auth/login
+POST https://t11-production-1adc.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "pulpopol@yopmail.xd",
+    "email": "pulpo.pol@yopmail.xd",
     "password": "contraseña"
 }
 
 
 ### Obtener usuario actual (necesario estar autenticado)
-GET http://localhost:3000/api/auth/me
+GET https://t11-production-1adc.up.railway.app/api/auth/me
 Authorization: Bearer {{token}}
 
 ### Añadir podcast (necesario estar autenticado)
-POST http://localhost:3000/api/podcasts
+POST https://t11-production-1adc.up.railway.app/api/podcasts
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -80,26 +87,26 @@ Authorization: Bearer {{token}}
 }
 
 ### Eliminar un podcast (necesario ser admin)
-DELETE http://localhost:3000/api/podcasts/69c3fd012d8156d204b4c840
+DELETE https://t11-production-1adc.up.railway.app/api/podcasts/69c3fd012d8156d204b4c840
 Authorization: Bearer {{tokenAdmin}}
 
 
 ### Obtener un podcast por ID (debe estar publicado salvo si eres admin)
-GET http://localhost:3000/api/podcasts/69c3fead97b23f884adea45d
+GET https://t11-production-1adc.up.railway.app/api/podcasts/69c3fead97b23f884adea45d
 Authorization: Bearer {{tokenAdmin}}
 
 
 ### Obtener los podcasts que estén publicados solamente (con paginación)
-GET http://localhost:3000/api/podcasts?page=1&limit=2
+GET https://t11-production-1adc.up.railway.app/api/podcasts?page=1&limit=2
 
 
 ### Obtener todos los podcasts incluyendo los no publicados (necesario ser admin - con paginación)
-GET http://localhost:3000/api/podcasts/admin/all?page=1&limit=5
+GET https://t11-production-1adc.up.railway.app/api/podcasts/admin/all?page=1&limit=5
 Authorization: Bearer {{tokenAdmin}}
 
 
 ### Actualizar un podcast (necesario ser el autor o ser admin)
-PUT http://localhost:3000/api/podcasts/69c2d6bdb99064813d1e46f4
+PUT https://t11-production-1adc.up.railway.app/api/podcasts/69c2d6bdb99064813d1e46f4
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -111,12 +118,12 @@ Authorization: Bearer {{token}}
 
 
 ### Publicar un podcast (necesario ser admin)
-PATCH http://localhost:3000/api/podcasts/69c3fead97b23f884adea45d/publish
+PATCH https://t11-production-1adc.up.railway.app/api/podcasts/69c3fead97b23f884adea45d/publish
 Content-Type: application/json
 Authorization: Bearer {{tokenAdmin}}
 
 
 ### Despublicar un podcast (necesario ser admin)
-PATCH http://localhost:3000/api/podcasts/69c3fead97b23f884adea45d/unpublish
+PATCH https://t11-production-1adc.up.railway.app/api/podcasts/69c3fead97b23f884adea45d/unpublish
 Content-Type: application/json
 Authorization: Bearer {{tokenAdmin}}

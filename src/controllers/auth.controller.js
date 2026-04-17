@@ -5,8 +5,8 @@ import { encrypt, compare } from '../utils/handlePassword.js';
 import { handleHttpError } from '../utils/handleError.js';
 import {
     generateAccessToken,
-    generateRefreshToken,
-    getRefreshTokenExpiry
+/*    generateRefreshToken,
+    getRefreshTokenExpiry*/
 } from '../utils/handleJwt.js';
 import { sendSlackMessage } from '../utils/handleSlack.js';
 
@@ -110,6 +110,7 @@ export const refreshCtrl = async (req, res) => {
     }
 
     // Buscar token en BD
+    /*
     const storedToken = await RefreshToken.findOne({ token: refreshToken }).populate('user');
 
     if (!storedToken || !storedToken.isActive()) {
@@ -120,6 +121,8 @@ export const refreshCtrl = async (req, res) => {
     const accessToken = generateAccessToken(storedToken.user);
 
     res.json({ accessToken });
+    */
+    res.status(501).json({ error: true, message: 'Refresh token functionality not implemented' });
 };
 
 /**

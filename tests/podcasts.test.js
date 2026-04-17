@@ -1,6 +1,5 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import { jest } from '@jest/globals';
 
 // Force test environment
 process.env.DB_NAME = 't8_test';

@@ -11,6 +11,7 @@
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
+    "eslint": "^10.2.0",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "jest": "^30.3.0",
@@ -31,5 +32,8 @@
     "build": "echo 'No build step required'",
     "test": "node --test",
     "lint": "eslint ."
+  },
+  "devDependencies": {
+    "globals": "^17.5.0"
   }
 }

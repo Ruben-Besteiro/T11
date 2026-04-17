@@ -41,7 +41,7 @@ export const getRefreshTokenExpiry = () => {
 export const verifyAccessToken = (token) => {
     try {
         return jwt.verify(token, JWT_SECRET);
-    } catch (err) {
+    } catch (_err) {
         return null;
     }
 };

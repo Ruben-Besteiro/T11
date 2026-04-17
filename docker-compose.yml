@@ -1,0 +1,30 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - MONGO_URL=mongodb://mongo:27017/t11     # Esto es la cadena de conexión completa, incluyendo el nombre de la base de datos al final
+      - DB_NAME=t11
+      - JWT_SECRET=r7n90f3trcy7n89trv8y9gtrw9ecwgrv80rvneht0trvhn8eretvhn80gtrvy8wnrvthwy8
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm start
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

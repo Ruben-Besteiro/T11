@@ -19,7 +19,7 @@ export const checkRole = (roles) => (req, res, next) => {
         } else {
             handleHttpError(res, 'USER_NOT_PERMISSIONS', 403);
         }
-    } catch (e) {
+    } catch (_e) {
         handleHttpError(res, 'ERROR_PERMISSIONS', 403);
     }
 }

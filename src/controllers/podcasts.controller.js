@@ -1,8 +1,6 @@
 // src/controllers/podcasts.controller.js
-import User from '../models/user.model.js';
 import Podcast from '../models/podcast.model.js';
 import { handleHttpError } from '../utils/handleError.js';
-import { verifyAccessToken } from '../utils/handleJwt.js';
 
 export const getPodcastsCtrl = async (req, res) => {
     try {
@@ -24,7 +22,7 @@ export const getPodcastsCtrl = async (req, res) => {
             hasNextPage: page < totalPages,
             hasPrevPage: page > 1
         });
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_GET_PODCASTS', 500);
     }
 };
@@ -39,7 +37,7 @@ export const getPodcastCtrl = async (req, res) => {
             return handleHttpError(res, 'PODCAST_NOT_PUBLISHED', 403);
         }
         res.json(podcast);
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_GET_PODCAST', 500);
     }
 };
@@ -76,7 +74,7 @@ export const updatePodcastCtrl = async (req, res) => {
 
         const updatedPodcast = await Podcast.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedPodcast);
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_UPDATE_PODCAST', 500);
     }
 };
@@ -85,7 +83,7 @@ export const deletePodcastCtrl = async (req, res) => {
     try {
         const podcast = await Podcast.findByIdAndDelete(req.params.id);
         res.json(podcast);
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_DELETE_PODCAST', 500);
     }
 };
@@ -109,7 +107,7 @@ export const getAllPodcastsCtrl = async (req, res) => {
             hasNextPage: page < totalPages,
             hasPrevPage: page > 1
         });
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_GET_ALL_PODCASTS', 500);
     }
 };
@@ -118,7 +116,7 @@ export const publishPodcastCtrl = async (req, res) => {
     try {
         const podcast = await Podcast.findByIdAndUpdate(req.params.id, { published: true }, { new: true });
         res.json(podcast);
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_PUBLISH_PODCAST', 500);
     }
 };
@@ -127,7 +125,7 @@ export const unpublishPodcastCtrl = async (req, res) => {
     try {
         const podcast = await Podcast.findByIdAndUpdate(req.params.id, { published: false }, { new: true });
         res.json(podcast);
-    } catch (err) {
+    } catch (_err) {
         handleHttpError(res, 'ERROR_UNPUBLISH_PODCAST', 500);
     }
 };
