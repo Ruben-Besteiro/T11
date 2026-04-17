@@ -74,7 +74,7 @@ app.use(errorHandler);
 const PORT = env.PORT;
 
 const startServer = async () => {
-  console.log('Intentando conectar a:', env.DB_URI);
+  console.log('Intentando conectar a:', env.MONGO_URL);
   await dbConnect();
   app.listen(PORT, () => {
     console.log(`🚀 Servidor en http://localhost:${PORT} [${env.NODE_ENV}]`);
