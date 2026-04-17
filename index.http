@@ -1,8 +1,11 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjljNTVjOTViYmJmMzA0NDYzYWM5OTIyIiwiaWF0IjoxNzc0NTQxOTczLCJleHAiOjE3NzQ1NDI4NzN9.IEk0_Tl0XzoYVqzraiH1wOgpXxxQn5H4klAWOSnISp8
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjllMjE3OGY5YTA4YzY3YWI2YmUxMGVhIiwiaWF0IjoxNzc2NDI0ODQ3LCJleHAiOjE3NzY0MjU3NDd9.oNNL6cuWpGXrsdZeUH8720InzwPgeY22_58LkeTvO8A
 @tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjljNDBjODUzYmQ3MzNjMjNmNjU5MGY2IiwiaWF0IjoxNzc2NDE3MjIxLCJleHAiOjE3NzY0MTgxMjF9.3Npt1jaZqi0iXu7gQhK9EBBPxw5BbstQpVt0jytGlyk
 
+### Las requests ya no utilizan localhost:3000
+### En Railway hay que crear un "dominio público" y eso se copia y pega
+
 ### Registrar usuario normal
-POST http://localhost:3000/api/auth/register
+POST https://t11.up.railway.app/api/auth/register
 Content-Type: application/json
 
 {
