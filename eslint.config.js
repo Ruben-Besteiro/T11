@@ -12,6 +12,7 @@ export default [
       }
     },
     rules: {
+      // Ignoramos las variables que empiezan por barra baja, por si nos da por culo
       'no-unused-vars': ['warn', {
         'argsIgnorePattern': '^_',
         'varsIgnorePattern': '^_',

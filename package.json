@@ -7,6 +7,7 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
+    "@sentry/node": "^8.55.1",
     "@slack/webhook": "^7.0.8",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
@@ -27,8 +28,8 @@
     "zod": "^4.3.6"
   },
   "scripts": {
-    "dev": "node --watch --env-file=.env src/app.js",
-    "start": "node src/app.js",
+    "dev": "node --watch --env-file=.env --import ./src/instrument.js src/app.js",
+    "start": "node --env-file=.env --import ./src/instrument.js src/app.js",
     "build": "echo 'No build step required'",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint ."

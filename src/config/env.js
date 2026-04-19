@@ -9,6 +9,7 @@ const envSchema = z.object({
     DB_NAME: z.string().default('test'),
     JWT_SECRET: z.string().min(32),
     JWT_EXPIRES_IN: z.string().default('7d'),
+    SENTRY_DSN: z.string().url().optional(),
 });
 
 // Validar al iniciar - falla rápido si falta algo

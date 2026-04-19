@@ -2,21 +2,21 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 
 // Force test environment
-process.env.DB_NAME = 't11';
+process.env.DB_NAME = 't8_test';
 process.env.NODE_ENV = 'test';
 // Use port 0 to avoid "address already in use" if multiple workers start
-process.env.PORT = '0'; 
+process.env.PORT = '0';
 
 // Import app and models after setting env
 const { default: app } = await import('../src/app.js');
 const { default: User } = await import('../src/models/user.model.js');
 
 describe('Auth Endpoints', () => {
-    
+
     beforeAll(async () => {
         // Ensure connection to test database
         if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.MONGO_URL, { dbName: 't11' });
+            await mongoose.connect(process.env.MONGO_URL, { dbName: 't8_test' });
         }
     });
 
@@ -43,7 +43,7 @@ describe('Auth Endpoints', () => {
             const res = await request(app)
                 .post('/api/auth/register')
                 .send(testUser);
-            
+
             expect(res.statusCode).toBe(201);
             expect(res.body).toHaveProperty('token');
             expect(res.body).toHaveProperty('user');
@@ -53,12 +53,12 @@ describe('Auth Endpoints', () => {
         it('✓ POST /api/auth/register → 400 si email duplicado', async () => {
             // First register
             await request(app).post('/api/auth/register').send(testUser);
-            
+
             // Second register with same email
             const res = await request(app)
                 .post('/api/auth/register')
                 .send(testUser);
-            
+
             expect(res.statusCode).toBe(400);
             expect(res.body.error).toBe(true);
         });
@@ -71,7 +71,7 @@ describe('Auth Endpoints', () => {
                     email: 'test@example.com'
                     // missing password and age
                 });
-            
+
             expect(res.statusCode).toBe(400);
             expect(res.body.error).toBe(true);
         });
@@ -81,28 +81,28 @@ describe('Auth Endpoints', () => {
         it('✓ POST /api/auth/login → 201 con token cuando credenciales válidas', async () => {
             // Register first
             await request(app).post('/api/auth/register').send(testUser);
-            
+
             const res = await request(app)
                 .post('/api/auth/login')
                 .send({
                     email: testUser.email,
                     password: testUser.password
                 });
-            
+
             expect(res.statusCode).toBe(201);
             expect(res.body).toHaveProperty('token');
         });
 
         it('✓ POST /api/auth/login → 401 si contraseña incorrecta', async () => {
             await request(app).post('/api/auth/register').send(testUser);
-            
+
             const res = await request(app)
                 .post('/api/auth/login')
                 .send({
                     email: testUser.email,
                     password: 'wrongpassword'
                 });
-            
+
             expect(res.statusCode).toBe(401);
             expect(res.body.error).toBe(true);
         });
@@ -117,7 +117,7 @@ describe('Auth Endpoints', () => {
             const res = await request(app)
                 .get('/api/auth/me')
                 .set('Authorization', `Bearer ${token}`);
-            
+
             expect(res.statusCode).toBe(200);
             expect(res.body).toHaveProperty('_id');
         });

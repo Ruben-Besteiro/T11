@@ -2,7 +2,6 @@
 import { Router } from 'express';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
-
 const router = Router();
 
 // Node.js 20.11+ - forma moderna de obtener __dirname

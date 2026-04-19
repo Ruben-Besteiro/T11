@@ -48,5 +48,5 @@ jobs:
         env:
           NODE_ENV: test
           # Es necesario que esto se duplique aquí
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}     # Esto se debe añadir manualmente a GitHub, en Settings -> Secrets and variables -> Actions -> New repository secret
           MONGO_URL: mongodb://localhost:27017/t8_test

@@ -1,6 +1,7 @@
 // src/app.js
 import express from 'express';
 import cors from 'cors';
+import * as Sentry from "@sentry/node";
 import dbConnect from './config/db.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Después de express.json(), antes de las rutas
+// Logs de cuerpo de petición
 morganBody(app, {
   noColors: true,
   skip: (req, res) => res.statusCode < 400, // Solo errores
@@ -36,26 +38,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-const isProduction = process.env.NODE_ENV === 'production';
-
-// Configurar según entorno
-if (isProduction) {
-  // Menos logs
-  app.use(morgan('combined'));
-} else {
-  // Más verbose
-  app.use(morgan('dev'));
-}
-
-// Error handler diferente
-app.use((err, req, res, _next) => {
-  console.error(err);
-
-  res.status(err.status || 500).json({
-    error: true,
-    message: isProduction ? 'Error interno' : err.message,
-    ...(isProduction ? {} : { stack: err.stack })
-  });
+// 🎯 RUTA DE PRUEBA PARA SENTRY
+app.get("/debug-sentry", (req, res) => {
+  const error = new Error("¡Mi primer error en Sentry (forzado manual)!");
+  Sentry.captureException(error);
+  throw error;
 });
 
 
@@ -63,11 +50,18 @@ app.use((err, req, res, _next) => {
 // Esto sirve para ver la documentación de la API en http://localhost:3000/api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// Rutas de la API
+// Rutas principales de la API
 app.use('/api', routes);
 
-// Manejo de errores
+// --- MANEJO DE ERRORES (Orden crítico) ---
+
+// 1. Sentry Error Handler (debe ir después de las rutas y antes de otros error handlers)
+Sentry.setupExpressErrorHandler(app);
+
+// 2. Manejo de rutas no encontradas
 app.use(notFound);
+
+// 3. Manejo de errores genéricos (Mongoose, etc)
 app.use(errorHandler);
 
 // Iniciar servidor

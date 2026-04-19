@@ -7,7 +7,6 @@
 ### En caso de haber varias, hay que ver que el puerto coincida
 ### Si el error es 404, es que la URL la he sacado del sitio incorrecto
 ### Pero si es 502, es que está usando el puerto que no es (creo)
-### Para ver la base de datos desde Mongo Compass hay que buscar la URL que cuesta "egress tokens"
 
 GET https://t11-production-1adc.up.railway.app/health
 
@@ -33,19 +32,6 @@ Content-Type: application/json
     "password": "contraseña",
     "role": "admin",
     "age": 67
-}
-
-
-
-### Registrar usuario no válido (debería fallar)
-POST http://localhost:3000/api/auth/register
-Content-Type: application/json
-
-{
-    "name": "Nadie",
-    "email": "emailnovalido",
-    "password": "ñ",
-    "age": -1
 }
 
 ### Login

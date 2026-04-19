@@ -1,4 +1,6 @@
 # Dockerfile
+# Railway detecta el archivo y crea el contenedor automáticamente
+# Si no existe, el contenedor se crea con un Dockerfile default
 
 # Imagen base
 FROM node:22-alpine
@@ -16,10 +18,10 @@ RUN npm ci --only=production
 COPY . .
 
 # Puerto que expone la app
-EXPOSE 3000
+EXPOSE 8080
 
 # Usuario no-root por seguridad
 USER node
 
-# Comando para iniciar
-CMD ["node", "src/app.js"]
+# Comando para iniciar con Sentry
+CMD ["node", "--import", "./src/instrument.js", "src/app.js"]
