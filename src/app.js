@@ -7,56 +7,61 @@ import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './api-docs/swagger.js';
-import morgan from 'morgan';
 import morganBody from 'morgan-body';
 import { loggerStream } from './utils/handleSlack.js';
 import { env } from './config/env.js';
 
 const app = express();
 
-// Middleware globales
-app.use(cors());
+// --- CONFIGURACIÓN DE MIDDLEWARES ---
+
+// 1. Parseo de Body (Siempre lo primero para evitar req.body undefined)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Después de express.json(), antes de las rutas
-// Logs de cuerpo de petición
-morganBody(app, {
-  noColors: true,
-  skip: (req, res) => res.statusCode < 400, // Solo errores
-  stream: loggerStream
-});
+// 2. CORS
+app.use(cors());
 
-// Archivos estáticos
-app.use('/uploads', express.static('storage'));     // Cuando el usuario mete uploads en la URL, se mete en la carpeta storage del servidor
+// 3. Logs de peticiones (Solo fuera de tests para evitar ruidos y problemas de stream)
+if (process.env.NODE_ENV !== 'test') {
+  morganBody(app, {
+    noColors: true,
+    skip: (req, res) => res.statusCode < 400,
+    stream: loggerStream
+  });
+}
+
+// 4. Archivos estáticos
+app.use('/uploads', express.static('storage'));
+
+// --- RUTAS ---
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString()
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Ruta de prueba Sentry (Solo fuera de tests)
+if (process.env.NODE_ENV !== 'test') {
+  app.get("/debug-sentry", (req, res) => {
+    const error = new Error("¡Mi primer error en Sentry (forzado manual)!");
+    Sentry.captureException(error);
+    throw error;
   });
-});
+}
 
-// 🎯 RUTA DE PRUEBA PARA SENTRY
-app.get("/debug-sentry", (req, res) => {
-  const error = new Error("¡Mi primer error en Sentry (forzado manual)!");
-  Sentry.captureException(error);
-  throw error;
-});
-
-
-// Después de los middlewares, antes de las rutas
-// Esto sirve para ver la documentación de la API en http://localhost:3000/api-docs
+// Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// Rutas principales de la API
+// API Routes
 app.use('/api', routes);
 
-// --- MANEJO DE ERRORES (Orden crítico) ---
+// --- MANEJO DE ERRORES ---
 
-// 1. Sentry Error Handler (debe ir después de las rutas y antes de otros error handlers)
-Sentry.setupExpressErrorHandler(app);
+// 1. Sentry Error Handler (Solo fuera de tests)
+if (process.env.NODE_ENV !== 'test') {
+  Sentry.setupExpressErrorHandler(app);
+}
 
 // 2. Manejo de rutas no encontradas
 app.use(notFound);
@@ -64,17 +69,23 @@ app.use(notFound);
 // 3. Manejo de errores genéricos (Mongoose, etc)
 app.use(errorHandler);
 
-// Iniciar servidor
-const PORT = env.PORT;
+// --- ARRANQUE DEL SERVIDOR ---
 
 const startServer = async () => {
-  console.log('Intentando conectar a:', env.MONGO_URL);
-  await dbConnect();
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Servidor en http://0.0.0.0:${PORT} [${env.NODE_ENV}]`);
-  });
+  try {
+    console.log('Intentando conectar a DB:', env.MONGO_URL);
+    await dbConnect();
+    app.listen(env.PORT, '0.0.0.0', () => {
+      console.log(`🚀 Servidor en http://0.0.0.0:${env.PORT} [${env.NODE_ENV}]`);
+    });
+  } catch (error) {
+    console.error('❌ Fallo al arrancar el servidor:', error);
+    process.exit(1);
+  }
 };
 
-startServer();
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
 
 export default app;

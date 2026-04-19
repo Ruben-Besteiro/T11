@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/node";
 
 const SENTRY_DSN = process.env.SENTRY_DSN;
 
-if (SENTRY_DSN) {
+if (SENTRY_DSN && process.env.NODE_ENV !== 'test') {
   Sentry.init({
     dsn: SENTRY_DSN,
     integrations: [

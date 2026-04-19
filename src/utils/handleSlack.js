@@ -10,6 +10,8 @@ const webhook = url ? new IncomingWebhook(url) : null;
  * @param {string} text - Contenido del mensaje
  */
 export const sendSlackMessage = async (text) => {
+    if (process.env.NODE_ENV === 'test') return;
+    
     if (!webhook) {
         console.error('SLACK_WEBHOOK no configurado en el archivo .env');
         return;
@@ -39,7 +41,7 @@ export const sendSlackMessage = async (text) => {
  */
 export const loggerStream = {
     write: (message) => {
-        if (webhook) {
+        if (webhook && process.env.NODE_ENV !== 'test') {
             webhook.send({
                 text: `🚨 *Error en API*\n\`\`\`${message}\`\`\``
             }).catch(err => console.error('Error enviando a Slack:', err));
