@@ -26,7 +26,7 @@ app.use(cors());
 if (process.env.NODE_ENV !== 'test') {
   morganBody(app, {
     noColors: true,
-    skip: (req, res) => res.statusCode < 400,
+  skip: (req, res) => res.statusCode < 400, // Solo errores
     stream: loggerStream
   });
 }
@@ -38,7 +38,10 @@ app.use('/uploads', express.static('storage'));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Ruta de prueba Sentry (Solo fuera de tests)
@@ -50,13 +53,15 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-// Swagger
+
+// Después de los middlewares, antes de las rutas
+// Swagger (http://localhost:3000/api-docs)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // API Routes
 app.use('/api', routes);
 
-// --- MANEJO DE ERRORES ---
+// --- MANEJO DE ERRORES (Orden crítico) ---
 
 // 1. Sentry Error Handler (Solo fuera de tests)
 if (process.env.NODE_ENV !== 'test') {

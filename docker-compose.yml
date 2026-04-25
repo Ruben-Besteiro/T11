@@ -1,4 +1,6 @@
 # docker-compose.yml
+# Si estoy utilizando Railway, este aarchivo no es necesario
+# Solo si uso Docker localmente o en otro servidor sin Railway
 version: '3.8'
 
 services:
@@ -9,9 +11,12 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8080
-      - MONGO_URL=mongodb://mongo:27017/t11     # Esto es la cadena de conexión completa, incluyendo el nombre de la base de datos al final
+      - MONGO_URL=mongodb://mongo:27017/t11 # Esto es la cadena de conexión completa, incluyendo el nombre de la base de datos al final
       - DB_NAME=t11
-      - JWT_SECRET=r7n90f3trcy7n89trv8y9gtrw9ecwgrv80rvneht0trvhn8eretvhn80gtrvy8wnrvthwy8
+      # Es importante no escribir el secreto nunca en ningún sitio
+      # Salvo en el .env, en Railway => Project Settings => Shared Variables
+      # Y en GitHub Actions => Secrets => New Repository Secret
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - mongo
     volumes:
